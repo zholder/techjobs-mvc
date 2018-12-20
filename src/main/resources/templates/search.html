@@ -15,12 +15,13 @@
 
         <p>
             <span th:each="column : ${columns}">
-                <input
+
+        <input
                         type="radio"
                         name="searchType"
                         th:id="${column.key}"
                         th:value="${column.key}"
-                        th:checked="${column.key == 'all'}"/>
+                        th:checked="${column.key == searchType}"/>
                 <label th:for="${column.key}" th:text="${column.value}"></label>
             </span>
 
@@ -28,7 +29,7 @@
 
         <p>
             <label for="searchTerm">Keyword:</label>
-            <input type="text" name="searchTerm" id="searchTerm" />
+            <input th:value="${searchTerm}" type="text" name="searchTerm" id="searchTerm" />
         </p>
 
         <input type="submit" value="Search" />
@@ -36,12 +37,17 @@
 
     <hr />
 
+    <span th:if="${jobs}">
+    <h3 th:text="${jobs.size()} + ' Result(s)'"></h3>
+    </span>
+
 
     <!-- TODO #2 - Loop over jobs map to display all job fields -->
     <table th:each="job : ${jobs}" th:class="job-listing">
         <tr th:each="detail : ${job}">
-            <td th:text="${detail.key}"></td>
-            <td th:text="${detail.value}"></td>
+            <td th:text="${#strings.capitalizeWords(detail.key)}"></td>
+            <td th:if="${detail.key != 'name'}"><a th:href="@{/list/jobs(column=${detail.key},value=${detail.value})}" th:text="${detail.value}"></a></td>
+            <td th:if="${detail.key == 'name'}"><span th:text="${detail.value}"></span></td>
         </tr>
     </table>
 </div>
